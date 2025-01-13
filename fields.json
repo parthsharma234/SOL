@@ -1,0 +1,90 @@
+{
+    "fields": {
+      "Technology and IT": {
+        "subfields": [
+          "AI and ML",
+          "Cybersecurity",
+          "Software Development",
+          "Data Science",
+          "Cloud Computing",
+          "Network Administration"
+        ],
+        "practices": [
+          "Conduct a technical test involving coding challenges, whiteboard problems, or system design tasks.",
+          "Ask behavioral questions focusing on teamwork, problem-solving, and adaptability.",
+          "Present open-ended problem-solving questions such as 'How would you design X?'",
+          "Review the candidate's portfolio or discuss past projects, code samples, or case studies.",
+          "Assess how the candidate approaches innovation and adapts to new technologies."
+        ]
+      },
+      "Finance and Banking": {
+        "subfields": [
+          "Investment Banking",
+          "Corporate Finance",
+          "Asset Management",
+          "Equity Research",
+          "Commercial Banking",
+          "Risk Management"
+        ],
+        "practices": [
+          "Conduct aptitude tests focused on numerical reasoning, data analysis, and logic-based questions.",
+          "Ask technical questions on financial modeling, market trends, and regulatory knowledge.",
+          "Present situational judgment scenarios to see how the candidate handles deadlines or high-pressure situations.",
+          "Discuss ethical considerations and ask how the candidate would handle sensitive or confidential information.",
+          "Focus on assessing the candidate's alignment with the firm's culture, values, and mission."
+        ]
+      },
+      "Engineering": {
+        "subfields": [
+          "Civil Engineering",
+          "Mechanical Engineering",
+          "Electrical Engineering",
+          "Chemical Engineering",
+          "Aerospace Engineering",
+          "Industrial Engineering"
+        ],
+        "practices": [
+          "Present technical problem-solving questions or challenges specific to the candidate's field.",
+          "Discuss past engineering projects in detail and evaluate the candidate's contributions.",
+          "Assess knowledge of safety codes and industry regulations through specific questions.",
+          "Ask about collaboration skills and experience working with multidisciplinary teams or stakeholders.",
+          "Evaluate how the candidate improves processes or innovates solutions in their field."
+        ]
+      },
+      "Sales": {
+        "subfields": [
+          "B2B Sales",
+          "B2C Sales",
+          "Inside Sales",
+          "Outside Sales",
+          "Technical Sales",
+          "Retail Sales"
+        ],
+        "practices": [
+          "Conduct roleplay scenarios where the candidate sells a product to the interviewer.",
+          "Ask the candidate to demonstrate past sales achievements with supporting data and metrics.",
+          "Present objection-handling scenarios to see how the candidate overcomes customer pushbacks.",
+          "Discuss the candidate's experience using CRM tools like Salesforce.",
+          "Evaluate the candidate's soft skills such as communication, persuasion, and negotiation."
+        ]
+      },
+      "Retail and Hospitality": {
+        "subfields": [
+          "Customer Service",
+          "Event Planning",
+          "Hotel Management",
+          "Restaurant Management",
+          "Retail Operations",
+          "Tourism"
+        ],
+        "practices": [
+          "Present customer service scenarios to evaluate how the candidate handles complaints or high-pressure situations.",
+          "Ask questions about teamwork and collaboration in fast-paced environments.",
+          "Discuss the candidate's scheduling flexibility and willingness to work irregular hours.",
+          "Ask how the candidate implements upselling techniques or improves sales performance.",
+          "Evaluate soft skills such as friendliness, adaptability, and multitasking through situational questions."
+        ]
+      }
+    }
+  }
+  
