@@ -1,24 +1,22 @@
 import cv2
 import mediapipe as mp
 import numpy as np
-from fer import FER  
+from fer import FER
 
-# Initialize mediapipe for face and body landmark detection
 mp_pose = mp.solutions.pose
 mp_face_mesh = mp.solutions.face_mesh
 pose = mp_pose.Pose()
 face_mesh = mp_face_mesh.FaceMesh()
-
-# Initialize FER for emotion detection
 emotion_detector = FER()
 
-# Function to draw landmarks
-def draw_landmarks(frame, landmarks, color=(0, 255, 0)):
-    for landmark in landmarks:
-        x, y = int(landmark[0]), int(landmark[1])
-        cv2.circle(frame, (x, y), 5, color, -1)
+def draw_lines_and_landmarks(frame, points, color=(0, 255, 0), thickness=2):
+    for i in range(len(points) - 1):
+        start = (int(points[i][0]), int(points[i][1]))
+        end = (int(points[i + 1][0]), int(points[i + 1][1]))
+        cv2.line(frame, start, end, color, thickness)
+    for point in points:
+        cv2.circle(frame, (int(point[0]), int(point[1])), 5, color, -1)
 
-# Analyze body posture for slouching
 def analyze_body_language(frame, landmarks):
     if landmarks:
         left_shoulder = [
@@ -29,66 +27,68 @@ def analyze_body_language(frame, landmarks):
             landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x * frame.shape[1],
             landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y * frame.shape[0],
         ]
+        left_hip = [
+            landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x * frame.shape[1],
+            landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y * frame.shape[0],
+        ]
+        right_hip = [
+            landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x * frame.shape[1],
+            landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y * frame.shape[0],
+        ]
+        left_hand = [
+            landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x * frame.shape[1],
+            landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y * frame.shape[0],
+        ]
+        right_hand = [
+            landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x * frame.shape[1],
+            landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y * frame.shape[0],
+        ]
 
-        # Vertical difference 
+        body_points = [left_shoulder, right_shoulder, right_hip, left_hip, left_shoulder]
+        arms_points = [left_shoulder, left_hand, right_hand, right_shoulder]
+
+        draw_lines_and_landmarks(frame, body_points, color=(0, 255, 0))
+        draw_lines_and_landmarks(frame, arms_points, color=(255, 0, 0))
+
         vertical_diff = abs(left_shoulder[1] - right_shoulder[1])
+        if vertical_diff < 10:
+            return "Good posture: Shoulders aligned", (0, 255, 0)
+        return "Slouching detected: Shoulders misaligned", (0, 0, 255)
 
-        # Define thresholds for slouching
-        if vertical_diff < 10:  # Adjust this threshold based on your setup
-            suggestion = "Good posture: Shoulders are aligned"
-            color = (0, 255, 0)  # Green
-        else:
-            suggestion = "Slouching detected: Shoulders are misaligned"
-            color = (0, 0, 255)  # Red
-
-        # Draw landmarks on the shoulders
-        draw_landmarks(frame, [left_shoulder, right_shoulder], color)
-        return suggestion, color
     return None, (255, 255, 255)
 
-# Analyze facial expressions for emotional confidence
 def analyze_facial_expressions(frame):
     emotions = emotion_detector.detect_emotions(frame)
     if emotions:
         main_emotion = max(emotions[0]["emotions"], key=emotions[0]["emotions"].get)
         if main_emotion in ["neutral", "happy"]:
-            return "Confident facial expression", (0, 255, 0)  # Green
-        else:
-            return "Low-confidence expression detected", (0, 0, 255)  # Red
-    return "No face detected", (255, 255, 255)  # White
+            return "Confident expression", (0, 255, 0)
+        return "Low-confidence expression", (0, 0, 255)
+    return "No face detected", (255, 255, 255)
 
-# Main function
 def main():
     cap = cv2.VideoCapture(0)
-
     while cap.isOpened():
         ret, frame = cap.read()
         if not ret:
             break
 
-       
         frame = cv2.flip(frame, 1)
-
-      
         results = pose.process(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+        body_suggestion, body_color = "", (255, 255, 255)
+        facial_suggestion, facial_color = "", (255, 255, 255)
 
-        body_suggestion = ""
-        facial_suggestion = ""
-
-       
         if results.pose_landmarks:
             landmarks = results.pose_landmarks.landmark
             body_suggestion, body_color = analyze_body_language(frame, landmarks)
-            cv2.putText(frame, body_suggestion, (10, 50), cv2.FONT_HERSHEY_SIMPLEX, 0.8, body_color, 2)
-
         
         facial_suggestion, facial_color = analyze_facial_expressions(frame)
-        cv2.putText(frame, facial_suggestion, (10, 90), cv2.FONT_HERSHEY_SIMPLEX, 0.8, facial_color, 2)
 
-       
-        cv2.imshow("Confidence and Posture Analysis", frame)
+        combined_suggestion = f"{body_suggestion} | {facial_suggestion}"
+        cv2.putText(frame, combined_suggestion, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 3)
+        cv2.putText(frame, combined_suggestion, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 0), 2)
 
-        # Break on 'q'
+        cv2.imshow("Posture and Emotion Analysis", frame)
         if cv2.waitKey(10) & 0xFF == ord('q'):
             break
 
